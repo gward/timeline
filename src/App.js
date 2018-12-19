@@ -39,7 +39,7 @@ var project = {
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="container">
         <ThumbnailList project={project} />
       </div>
     );

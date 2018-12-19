@@ -5,9 +5,10 @@ export class ThumbnailList extends Component {
     let thumbnailItem = (viewpair) => {
       let view_id = viewpair[0];
       let img_path = viewpair[1];
+      let desc = this.props.project.views[view_id];
       return (
-        <li key={view_id}>
-          <a href={view_id}><img src={img_path}/>{view_id}</a>
+        <li key={view_id} className="list-group-item">
+          <a href={view_id}><img src={img_path}/>{desc}</a>
         </li>
       );
     };
@@ -16,7 +17,7 @@ export class ThumbnailList extends Component {
 
     return (
       <div>
-        <ul>{thumbnailItems}</ul>
+        <ul className="list-group">{thumbnailItems}</ul>
       </div>
     );
   }
