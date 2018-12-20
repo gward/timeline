@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import './App.css';
 import { ThumbnailList } from './ThumbnailList';
 
@@ -10,23 +11,23 @@ var project = {
   },
   'photos': {
     '01.hall': [
-      [0, '2018-10-22', '01.hall/2018-10-22.jpg'],
-      [2, '2018-10-24', '01.hall/2018-10-24.jpg'],
-      [1, '2018-10-25', '01.hall/2018-10-25.jpg'],
-      [4, '2018-10-29', '01.hall/2018-10-29.jpg'],
+      {delay: 0, date: '2018-10-22', path: '01.hall/2018-10-22.jpg'},
+      {delay: 2, date: '2018-10-24', path: '01.hall/2018-10-24.jpg'},
+      {delay: 1, date: '2018-10-25', path: '01.hall/2018-10-25.jpg'},
+      {delay: 4, date: '2018-10-29', path: '01.hall/2018-10-29.jpg'},
     ],
     '02.to-sw': [
-      [0, '2018-10-22', '02.to-sw/2018-10-22.jpg'],
-      [2, '2018-10-24', '02.to-sw/2018-10-24.jpg'],
-      [1, '2018-10-25', '02.to-sw/2018-10-25.jpg'],
-      [1, '2018-10-26', '02.to-sw/2018-10-26.jpg'],
+      {delay: 0, date: '2018-10-22', path: '02.to-sw/2018-10-22.jpg'},
+      {delay: 2, date: '2018-10-24', path: '02.to-sw/2018-10-24.jpg'},
+      {delay: 1, date: '2018-10-25', path: '02.to-sw/2018-10-25.jpg'},
+      {delay: 1, date: '2018-10-26', path: '02.to-sw/2018-10-26.jpg'},
     ],
     '03.from-sw': [
-      [0, '2018-10-22', '03.from-sw/2018-10-22.jpg'],
-      [2, '2018-10-24', '03.from-sw/2018-10-24.jpg'],
-      [1, '2018-10-25', '03.from-sw/2018-10-25.jpg'],
-      [1, '2018-10-26', '03.from-sw/2018-10-26.jpg'],
-      [3, '2018-10-29', '03.from-sw/2018-10-29.jpg'],
+      {delay: 0, date: '2018-10-22', path: '03.from-sw/2018-10-22.jpg'},
+      {delay: 2, date: '2018-10-24', path: '03.from-sw/2018-10-24.jpg'},
+      {delay: 1, date: '2018-10-25', path: '03.from-sw/2018-10-25.jpg'},
+      {delay: 1, date: '2018-10-26', path: '03.from-sw/2018-10-26.jpg'},
+      {delay: 3, date: '2018-10-29', path: '03.from-sw/2018-10-29.jpg'},
     ],
   },
   'thumbnails': {
