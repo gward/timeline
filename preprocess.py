@@ -16,6 +16,7 @@ import argparse
 import collections
 import datetime
 import json
+import pprint
 import re
 
 from PIL import Image
@@ -45,10 +46,10 @@ def main():
         sys.exit(1)
     if not check_views(view_map):
         sys.exit(1)
-    # pprint.pprint(view_map)
 
     photo_map = make_fullsize(view_map, args.out_dir)
     thumbnail_map = make_thumbnails(view_map, args.out_dir)
+    photo_map = repeat_photos(photo_map)
     emit_data(
         args.out_dir, description_map, view_map, photo_map, thumbnail_map)
 
@@ -124,7 +125,7 @@ def check_views(view_map):
 
 
 def make_fullsize(view_map, out_dir):
-    """return mapping from (view_id, date) to relative path"""
+    """return mapping from view_id to list of dict (one per photo)"""
     assert not out_dir.endswith('/')
     chop_len = len(out_dir) + 1
     photo_map = collections.defaultdict(list)
@@ -133,7 +134,7 @@ def make_fullsize(view_map, out_dir):
         for (_, date, in_file) in view_map[view_id]:
             photo_file = os.path.join(photo_dir, view_id, str(date) + '.jpg')
             photo_map[view_id].append(
-                {'date': str(date), 'path': photo_file[chop_len:]})
+                {'date': date, 'path': photo_file[chop_len:]})
             resize_img(in_file, photo_file, 1024)
     return dict(photo_map)
 
@@ -165,14 +166,53 @@ def resize_img(in_file, out_file, new_width):
         in_img.resize(new_size).save(out_file)
 
 
+def repeat_photos(photo_map):
+    # input (per view_id):
+    #   {'date': d1, 'path': p1}
+    #   {'date': d3, 'path': p3}
+    #
+    # output:
+    #   {'date': d1, 'path': p1}
+    #   {'date': d2, 'path': p1}
+    #   {'date': d3, 'path': p3}
+
+    result = {}
+    for (view_id, photos) in photo_map.items():
+        new_photos = photos[:1]
+        prev_photo = photos[0]
+        for photo in photos[1:]:
+            cur_date = photo['date']
+            prev_date = prev_photo['date']
+
+            delta = (cur_date - prev_date).days
+            assert delta >= 1, (
+                'WTF: prev_date = %r, cur_date = %r' % (prev_date, cur_date))
+            while delta > 1:
+                prev_date = prev_date + datetime.timedelta(days=1)
+                new_photos.append({
+                    'date': prev_date,
+                    'path': prev_photo['path'],
+                })
+                delta -= 1
+            new_photos.append(photo)
+            prev_photo = photo
+
+        result[view_id] = new_photos
+
+    return result
+
 def emit_data(out_dir, description_map, view_map, photo_map, thumbnail_map):
     views = []                  # list of view dicts
     for view_id in sorted(view_map):
+        photos = [
+            {'date': str(photo['date']), 'path': photo['path']}
+            for photo in photo_map[view_id]]
+
         views.append({
             'id': view_id,
             'desc': description_map[view_id],
             'thumbnail': thumbnail_map[view_id],
-            'photos': photo_map[view_id],
+            'photos': photos,
         })
 
     result = {'views': views}
