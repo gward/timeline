@@ -5,25 +5,27 @@ import { ViewPage } from './ViewPage';
 
 export class ThumbnailList extends Component {
   render() {
-    let photoPage = ({ match }) => (
-      <ViewPage project={this.props.project} view_id={match.params.id} />);
+    let viewMap = {};
+    this.props.project.views.map((view) => (viewMap[view.id] = view));
 
-    let thumbnailItem = (viewpair) => {
-      let view_id = viewpair[0];
-      let img_path = viewpair[1];
-      let desc = this.props.project.views[view_id];
+    let photoPage = ({ match }) => {
+      let view = viewMap[match.params.id];
+      return <ViewPage project={this.props.project} view={view} />;
+    }
+
+    let thumbnailItem = (view) => {
       return (
-        <li key={view_id} className="list-group-item">
-          <Link to={view_id}><img src={img_path} alt=""/>{desc}</Link>
+        <li key={view.id} className="list-group-item">
+          <Link to={view.id}>
+            <img src={view.thumbnail} alt=""/>{view.desc}
+          </Link>
         </li>
       );
     };
 
     let thumbnailList = () => {
-      let thumbnailItems = Object.entries(this.props.project.thumbnails)
-          .map(thumbnailItem);
-      let thumbnailList = <ul className="list-group">{thumbnailItems}</ul>;
-      return thumbnailList;
+      let thumbnailItems = this.props.project.views.map(thumbnailItem);
+      return <ul className="list-group">{thumbnailItems}</ul>;
     };
 
     return (
