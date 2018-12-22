@@ -4,7 +4,7 @@ export class ViewPage extends Component {
   constructor(props) {
     super(props);
     this.timeout = null;
-    this.baseDelay = 1000;      // ms per day
+    this.delay = 3000;          // ms per day
     this.state = {photoIndex: -1, last: false};
 
     this.nextPhoto = this.nextPhoto.bind(this);
@@ -42,7 +42,7 @@ export class ViewPage extends Component {
     this.setState({photoIndex: index + 1, last})
 
     if (!last) {
-      this.timeout = setTimeout(this.nextPhoto, this.baseDelay);
+      this.timeout = setTimeout(this.nextPhoto, this.delay);
     }
   }
 }
