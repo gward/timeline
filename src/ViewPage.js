@@ -30,7 +30,7 @@ export class ViewPage extends Component {
     return (
       <div>
         <h1>{photos[index].date}: {desc}{last}</h1>
-        <img src={photos[index].path} alt="" />
+        <img style={{width: "100%"}} src={photos[index].path} alt="" />
       </div>
     );
   }
