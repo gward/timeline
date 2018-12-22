@@ -24,9 +24,8 @@ export class ViewPage extends Component {
       return null;
     }
 
-    let view_id = this.props.view.id;
     let desc = this.props.view.desc;
-    let photos = this.props.project.photos[view_id];
+    let photos = this.props.view.photos;
     let last = this.state.last ? <span> (FIN)</span> : null;
     return (
       <div>
@@ -37,7 +36,7 @@ export class ViewPage extends Component {
   }
 
   nextPhoto() {
-    let photos = this.props.project.photos[this.props.view.id];
+    let photos = this.props.view.photos;
     let index = this.state.photoIndex;
     let last = (index + 1 === photos.length - 1);
     this.setState({photoIndex: index + 1, last})
