@@ -14,6 +14,7 @@ export class ViewPage extends Component {
     this.nextDay = this.nextDay.bind(this);
     this.actionSlower = this.actionSlower.bind(this);
     this.actionFaster = this.actionFaster.bind(this);
+    this.actionRestart = this.actionRestart.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +46,7 @@ export class ViewPage extends Component {
             onClick={this.actionFaster}
             disabled={this.state.delay < 500}>Faster</Button>
           <Button>Forwards</Button>
+          <Button onClick={this.actionRestart}>Restart</Button>
         </ButtonGroup>
         <span>(current speed: {this.state.delay/1000} sec/day}</span>
       </div>
@@ -73,5 +75,11 @@ export class ViewPage extends Component {
     }
     delay -= 500;
     this.setState({delay});
+  }
+
+  actionRestart() {
+    clearTimeout(this.timeout);
+    this.setState({photoIndex: -1});
+    this.timeout = setTimeout(this.nextDay, 0);
   }
 }
