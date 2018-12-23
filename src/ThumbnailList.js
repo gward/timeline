@@ -15,11 +15,11 @@ export class ThumbnailList extends Component {
 
     let thumbnailItem = (view) => {
       return (
-        <li key={view.id} className="list-group-item">
-          <Link to={view.id}>
+        <Link to={view.id}>
+          <li key={view.id} className="list-group-item">
             <img src={view.thumbnail} alt=""/>{view.desc}
-          </Link>
-        </li>
+          </li>
+        </Link>
       );
     };
 
