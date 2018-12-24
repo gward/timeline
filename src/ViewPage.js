@@ -43,13 +43,17 @@ export class ViewPage extends Component {
         <h1>{photos[index].date}: {desc}{last}</h1>
         <img style={{width: "100%"}} src={photos[index].path} alt="" />
         <ButtonGroup>
-          <Button onClick={this.actionReverse}>Reverse</Button>
+          <Button
+            onClick={this.actionReverse}
+            disabled={!this.state.forward}>Reverse</Button>
           <Button onClick={this.actionSlower}>Slower</Button>
           <Button>Pause</Button>
           <Button
             onClick={this.actionFaster}
             disabled={this.state.delay < 500}>Faster</Button>
-          <Button onClick={this.actionForward}>Forward</Button>
+          <Button
+            onClick={this.actionForward}
+            disabled={this.state.forward}>Forward</Button>
           <Button onClick={this.actionRestart}>Restart</Button>
         </ButtonGroup>
         <span>(current speed: {this.state.delay/1000} sec/day}</span>
