@@ -4,8 +4,8 @@ import { ButtonGroup, Button } from 'reactstrap';
 export class ViewPage extends Component {
   constructor(props) {
     super(props);
-    this.timeout = null;
     this.state = {
+      timeout: null,
       photoIndex: -1,
       last: false,
       forward: true,            // direction of playback
@@ -16,6 +16,7 @@ export class ViewPage extends Component {
     this.nextDay = this.nextDay.bind(this);
     this.actionReverse = this.actionReverse.bind(this);
     this.actionForward = this.actionForward.bind(this);
+    this.actionTogglePlayback = this.actionTogglePlayback.bind(this);
     this.actionSlower = this.actionSlower.bind(this);
     this.actionFaster = this.actionFaster.bind(this);
     this.actionRestart = this.actionRestart.bind(this);
@@ -26,7 +27,7 @@ export class ViewPage extends Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timeout);
+    clearTimeout(this.state.timeout);
   }
 
   render() {
@@ -47,7 +48,10 @@ export class ViewPage extends Component {
             onClick={this.actionReverse}
             disabled={!this.state.forward}>Reverse</Button>
           <Button onClick={this.actionSlower}>Slower</Button>
-          <Button>Pause</Button>
+          <Button
+            onClick={this.actionTogglePlayback}
+            disabled={this.state.last}>
+           {this.state.timeout == null ? "Play" : "Pause"}</Button>
           <Button
             onClick={this.actionFaster}
             disabled={this.state.delay < 500}>Faster</Button>
@@ -68,8 +72,8 @@ export class ViewPage extends Component {
     if (index <= 0) {
       return;
     }
-    this.setState({photoIndex: index - 1, last});
-    this.timeout = setTimeout(this.previousDay, this.state.delay);
+    let timeout = setTimeout(this.previousDay, this.state.delay);
+    this.setState({photoIndex: index - 1, last, timeout});
   }
 
   nextDay() {
@@ -77,11 +81,12 @@ export class ViewPage extends Component {
     let index = this.state.photoIndex;
     let last = (index + 1 === photos.length - 1);
     //console.log(`nextDay(): index = ${index}, last = ${last}`);
-    this.setState({photoIndex: index + 1, last});
 
+    let timeout;
     if (!last) {
-      this.timeout = setTimeout(this.nextDay, this.state.delay);
+      timeout = setTimeout(this.nextDay, this.state.delay);
     }
+    this.setState({photoIndex: index + 1, last, timeout});
   }
 
   actionReverse() {
@@ -89,9 +94,9 @@ export class ViewPage extends Component {
       return;
     }
 
-    clearTimeout(this.timeout);
-    this.setState({forward: false});
-    this.timeout = setTimeout(this.previousDay, this.state.delay);
+    clearTimeout(this.state.timeout);
+    let timeout = setTimeout(this.previousDay, this.state.delay);
+    this.setState({forward: false, timeout});
   }
 
   actionForward() {
@@ -99,9 +104,26 @@ export class ViewPage extends Component {
       return;
     }
 
-    clearTimeout(this.timeout);
-    this.setState({forward: true});
-    this.timeout = setTimeout(this.nextDay, this.state.delay);
+    clearTimeout(this.state.timeout);
+    let timeout = setTimeout(this.nextDay, this.state.delay);
+    this.setState({forward: true, timeout});
+  }
+
+  actionTogglePlayback() {
+    let timeout;
+    if (this.state.timeout == null) {
+      // currently paused: play (unless already at the end)
+      if (this.state.last) {
+        return;
+      }
+      let func = this.state.forward ? this.nextDay : this.previousDay;
+      timeout = setTimeout(func, 0);
+    } else {
+      // currently playing: pause
+      clearTimeout(this.state.timeout);
+      timeout = null;
+    }
+    this.setState({timeout});
   }
 
   actionSlower() {
@@ -120,8 +142,8 @@ export class ViewPage extends Component {
   }
 
   actionRestart() {
-    clearTimeout(this.timeout);
-    this.setState({photoIndex: -1, forward: true});
-    this.timeout = setTimeout(this.nextDay, 0);
+    clearTimeout(this.state.timeout);
+    let timeout = setTimeout(this.nextDay, 0);
+    this.setState({photoIndex: -1, forward: true, timeout});
   }
 }
